@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
-
 licenses(["notice"])
 
 exports_files(["LICENSE"])
@@ -38,8 +36,8 @@ cc_library(
         "zip_iterator.h",
     ],
     deps = [
-        "@com_google_absl//absl/types:variant",
-        "@com_google_absl//absl/utility",
+        "@abseil-cpp//absl/types:variant",
+        "@abseil-cpp//absl/utility",
     ],
 )
 
@@ -50,7 +48,7 @@ cc_test(
     ],
     deps = [
         ":iterators",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -61,7 +59,7 @@ cc_test(
     ],
     deps = [
         ":iterators",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -72,7 +70,7 @@ cc_test(
     ],
     deps = [
         ":iterators",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -83,7 +81,7 @@ cc_test(
     ],
     deps = [
         ":iterators",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -92,7 +90,7 @@ cc_test(
     srcs = ["concat_range_test.cc"],
     deps = [
         ":iterators",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -104,7 +102,7 @@ cc_test(
     ],
     deps = [
         ":iterators",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -123,9 +121,9 @@ cc_test(
     deps = [
         ":functional_helpers",
         ":iterators",
-        "@com_google_absl//absl/functional:any_invocable",
-        "@com_google_absl//absl/memory",
-        "@com_google_googletest//:gtest_main",
+        "@abseil-cpp//absl/functional:any_invocable",
+        "@abseil-cpp//absl/memory",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -136,7 +134,7 @@ cc_test(
     ],
     deps = [
         ":iterators",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -147,7 +145,7 @@ cc_test(
     ],
     deps = [
         ":iterators",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -156,7 +154,7 @@ cc_test(
     srcs = ["nested_range_test.cc"],
     deps = [
         ":iterators",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -167,7 +165,7 @@ cc_test(
     ],
     deps = [
         ":iterators",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -178,7 +176,7 @@ cc_test(
     ],
     deps = [
         ":iterators",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -189,6 +187,6 @@ cc_test(
     ],
     deps = [
         ":iterators",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
     ],
 )
