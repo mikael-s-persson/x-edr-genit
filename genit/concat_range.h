@@ -25,8 +25,6 @@
 #include <utility>
 #include <variant>
 
-#include "absl/types/variant.h"
-#include "absl/utility/utility.h"
 #include "genit/iterator_facade.h"
 #include "genit/iterator_range.h"
 #include "genit/zip_iterator.h"
@@ -122,7 +120,7 @@ class ConcatRange {
    public:
     ConcatIterator(concat_range_detail::BeginTag,
                    const ConcatRange<Ranges...>* range)
-        : concat_(range), it_(absl::in_place_index<0>, BeginOf<0>()) {
+        : concat_(range), it_(std::in_place_index<0>, BeginOf<0>()) {
       // Skip empty ranges and find a valid begin.
       if (concat_range_detail::RangeIsEmpty(std::get<0>(concat_->ranges_))) {
         Increment();
@@ -131,14 +129,14 @@ class ConcatRange {
     ConcatIterator(concat_range_detail::EndTag,
                    const ConcatRange<Ranges...>* range)
         : concat_(range),
-          it_(absl::in_place_index<kNumberOfRanges - 1>,
+          it_(std::in_place_index<kNumberOfRanges - 1>,
               EndOf<kNumberOfRanges - 1>()) {}
 
    private:
     friend class IteratorFacadePrivateAccess<ConcatIterator>;
 
     static constexpr size_t kNumberOfRanges = sizeof...(Ranges);
-    using IndexSeq = absl::make_index_sequence<kNumberOfRanges>;
+    using IndexSeq = std::make_index_sequence<kNumberOfRanges>;
 
     template <size_t Id>
     auto BeginOf() const {
@@ -158,7 +156,7 @@ class ConcatRange {
              (EndOf<Id>() - std::get<Id>(it_));
     }
     template <size_t... Ids>
-    int IndexOfIterator(absl::index_sequence<Ids...> ids) const {
+    int IndexOfIterator(std::index_sequence<Ids...> ids) const {
       static_assert(
           std::is_same_v<
               typename std::iterator_traits<ConcatIterator>::iterator_category,
@@ -179,10 +177,10 @@ class ConcatRange {
           concat_range_detail::SizeOfRange(std::get<Id>(concat_->ranges_));
       const int offset = concat_->accumulated_sizes_[Id] - size;
       const int relative_index = index - offset;
-      it_ = VariantIt(absl::in_place_index<Id>, BeginOf<Id>() + relative_index);
+      it_ = VariantIt(std::in_place_index<Id>, BeginOf<Id>() + relative_index);
     }
     template <size_t... Ids>
-    void SetToIndex(absl::index_sequence<Ids...> ids, int index) {
+    void SetToIndex(std::index_sequence<Ids...> ids, int index) {
       const auto it =
           std::upper_bound(concat_->accumulated_sizes_.cbegin(),
                            concat_->accumulated_sizes_.cend(), index);
@@ -195,7 +193,7 @@ class ConcatRange {
     // beginning of the next range.  Returns true if the incrementing finished
     // to allow skipping empty ranges.
     template <size_t Id>
-    bool Increment(absl::in_place_index_t<Id>) {
+    bool Increment(std::in_place_index_t<Id>) {
       auto& it = std::get<Id>(it_);
       if constexpr (Id == kNumberOfRanges - 1) {
         ++it;
@@ -205,7 +203,7 @@ class ConcatRange {
           ++it;
         }
         if (it == last) {
-          it_ = VariantIt(absl::in_place_index<Id + 1>, BeginOf<Id + 1>());
+          it_ = VariantIt(std::in_place_index<Id + 1>, BeginOf<Id + 1>());
           // Finished if the set iterator is valid, or the end.
           return (Id + 2 == kNumberOfRanges) ||
                  (!concat_range_detail::RangeIsEmpty(
@@ -215,18 +213,18 @@ class ConcatRange {
       return true;
     }
     template <size_t... Ids>
-    void Increment(absl::index_sequence<Ids...> ids) {
+    void Increment(std::index_sequence<Ids...> ids) {
       const int variant_index = it_.index();
-      (void)((Ids >= variant_index && Increment(absl::in_place_index<Ids>)) ||
+      (void)((Ids >= variant_index && Increment(std::in_place_index<Ids>)) ||
              ...);
     }
 
     template <size_t Id>
-    bool Decrement(absl::in_place_index_t<Id>) {
+    bool Decrement(std::in_place_index_t<Id>) {
       auto& it = std::get<Id>(it_);
       if constexpr (Id != 0) {
         if (it == BeginOf<Id>()) {
-          it_ = VariantIt(absl::in_place_index<Id - 1>, EndOf<Id - 1>());
+          it_ = VariantIt(std::in_place_index<Id - 1>, EndOf<Id - 1>());
           return false;
         }
       }
@@ -234,11 +232,11 @@ class ConcatRange {
       return true;
     }
     template <size_t... Ids>
-    void Decrement(absl::index_sequence<Ids...> ids) {
+    void Decrement(std::index_sequence<Ids...> ids) {
       const int variant_index = it_.index();
       // Use reverse iteration, using (kNumberOfRanges-1) - Ids as index.
       (void)(((variant_index >= (kNumberOfRanges - 1) - Ids) &&
-              Decrement(absl::in_place_index<(kNumberOfRanges - 1) - Ids>)) ||
+              Decrement(std::in_place_index<(kNumberOfRanges - 1) - Ids>)) ||
              ...);
     }
 
@@ -281,15 +279,15 @@ class ConcatRange {
   }
 
  private:
-  using IndexSeq = absl::make_index_sequence<sizeof...(Ranges)>;
+  using IndexSeq = std::make_index_sequence<sizeof...(Ranges)>;
 
   template <typename Category, size_t... Ids>
-  void SetAccumulatedSizes(Category, absl::index_sequence<Ids...> ids) {
+  void SetAccumulatedSizes(Category, std::index_sequence<Ids...> ids) {
     // No op.
   }
   template <size_t... Ids>
   void SetAccumulatedSizes(std::random_access_iterator_tag,
-                           absl::index_sequence<Ids...> ids) {
+                           std::index_sequence<Ids...> ids) {
     int acc = 0;
     auto it = std::begin(accumulated_sizes_);
     (void)(((*(it++) = acc +=

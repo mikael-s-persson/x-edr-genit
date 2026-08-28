@@ -22,7 +22,6 @@
 #include <type_traits>
 #include <vector>
 
-#include "absl/functional/any_invocable.h"
 #include "genit/iterator_range.h"
 #include "genit/transform_iterator.h"
 #include "gmock/gmock.h"
@@ -137,7 +136,7 @@ TEST(Signature, FunctionSignatureStaticAssert) {
 
 // This test verifies that Signature extracts the right types for a function.
 TEST(Signature, AnyInvocableSignatureStaticAssert) {
-  absl::AnyInvocable<bool(float, int) const&> func;
+  std::function<bool(float, int)> func;
   auto invoker = &decltype(func)::operator();
   using FunctionType = decltype(invoker);
   static_assert(std::is_same_v<Signature<FunctionType>::Argument<0>, float>,

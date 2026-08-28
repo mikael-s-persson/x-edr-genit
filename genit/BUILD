@@ -37,10 +37,6 @@ cc_library(
         "transform_iterator.h",
         "zip_iterator.h",
     ],
-    deps = [
-        "@abseil-cpp//absl/types:variant",
-        "@abseil-cpp//absl/utility",
-    ],
 )
 
 cc_test(
@@ -123,8 +119,6 @@ cc_test(
     deps = [
         ":functional_helpers",
         ":iterators",
-        "@abseil-cpp//absl/functional:any_invocable",
-        "@abseil-cpp//absl/memory",
         "@googletest//:gtest_main",
     ],
 )

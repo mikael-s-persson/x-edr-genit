@@ -24,7 +24,6 @@
 #include <type_traits>
 #include <utility>
 
-#include "absl/utility/utility.h"
 #include "genit/iterator_facade.h"
 #include "genit/iterator_range.h"
 
@@ -130,37 +129,37 @@ class ZipIterator : public IteratorFacade<
   friend class IteratorFacadePrivateAccess<ZipIterator>;
 
   using OutputRefType = std::tuple<decltype(*std::declval<Iters>())...>;
-  using IterIndexSeq = absl::make_index_sequence<sizeof...(Iters)>;
+  using IterIndexSeq = std::make_index_sequence<sizeof...(Iters)>;
 
   // Implementation of the IteratorFacade requirements:
   template <size_t... Ids>
-  OutputRefType Dereference(absl::index_sequence<Ids...> ids) const {
+  OutputRefType Dereference(std::index_sequence<Ids...> ids) const {
     return OutputRefType{(*std::get<Ids>(it_tuple_))...};
   }
   template <size_t... Ids>
-  void Increment(absl::index_sequence<Ids...> ids) {
+  void Increment(std::index_sequence<Ids...> ids) {
     ((void)++std::get<Ids>(it_tuple_), ...);
   }
   template <size_t... Ids>
-  void Decrement(absl::index_sequence<Ids...> ids) {
+  void Decrement(std::index_sequence<Ids...> ids) {
     ((void)--std::get<Ids>(it_tuple_), ...);
   }
   template <size_t... Ids>
-  bool IsEqual(const ZipIterator& rhs, absl::index_sequence<Ids...> ids) const {
+  bool IsEqual(const ZipIterator& rhs, std::index_sequence<Ids...> ids) const {
     // Only require one pair of iterators to match such that iterations are
     // stopped by the shortest range if all ranges don't match.
     return ((std::get<Ids>(it_tuple_) == std::get<Ids>(rhs.it_tuple_)) || ...);
   }
   template <size_t... Ids>
   int DistanceTo(const ZipIterator& rhs,
-                 absl::index_sequence<Ids...> ids) const {
+                 std::index_sequence<Ids...> ids) const {
     // Return the smallest distance between iterators because that is where
     // iterations will stop.
     return zip_iterator_detail::VariadicMin(
         (std::get<Ids>(rhs.it_tuple_) - std::get<Ids>(it_tuple_))...);
   }
   template <size_t... Ids>
-  void Advance(int n, absl::index_sequence<Ids...> ids) {
+  void Advance(int n, std::index_sequence<Ids...> ids) {
     ((void)(std::get<Ids>(it_tuple_) += n), ...);
   }
 

@@ -23,7 +23,6 @@
 #include <type_traits>
 #include <utility>
 
-#include "absl/utility/utility.h"
 #include "genit/iterator_facade.h"
 #include "genit/iterator_range.h"
 #include "genit/zip_iterator.h"
@@ -82,7 +81,7 @@ class NestedIterator
       std::tuple<decltype(*std::declval<RangeIteratorType<FirstRange>>()),
                  decltype(*std::declval<RangeIteratorType<Ranges>>())...>;
   static constexpr size_t kNumberOfRanges = sizeof...(Ranges) + 1;
-  using IndexSeq = absl::make_index_sequence<kNumberOfRanges>;
+  using IndexSeq = std::make_index_sequence<kNumberOfRanges>;
 
   NestedIterator(nested_range_detail::BeginTag,
                  const std::tuple<FirstRange, Ranges...>* ranges)
@@ -107,13 +106,13 @@ class NestedIterator
   friend class IteratorFacadePrivateAccess<NestedIterator>;
 
   template <size_t... Ids>
-  void MakeBegin(absl::index_sequence<Ids...> ids) {
+  void MakeBegin(std::index_sequence<Ids...> ids) {
     using std::begin;
     ((void)(std::get<Ids>(it_tuple_) = begin(std::get<Ids>(*ranges_))), ...);
   }
 
   template <size_t... Ids>
-  void MakeEnd(absl::index_sequence<Ids...> ids) {
+  void MakeEnd(std::index_sequence<Ids...> ids) {
     using std::begin;
     using std::end;
     ((void)(std::get<Ids>(it_tuple_) =
@@ -123,14 +122,14 @@ class NestedIterator
   }
 
   template <size_t... Ids>
-  OutputRefType Dereference(absl::index_sequence<Ids...> ids) const {
+  OutputRefType Dereference(std::index_sequence<Ids...> ids) const {
     return OutputRefType{(*std::get<Ids>(it_tuple_))...};
   }
   OutputRefType Dereference() const { return Dereference(IndexSeq()); }
 
   template <size_t... Ids>
   bool IsEqual(const NestedIterator& rhs,
-               absl::index_sequence<Ids...> ids) const {
+               std::index_sequence<Ids...> ids) const {
     // Require all iterators to match.
     return ((std::get<Ids>(it_tuple_) == std::get<Ids>(rhs.it_tuple_)) && ...);
   }
@@ -155,7 +154,7 @@ class NestedIterator
     }
   }
   template <size_t... Ids>
-  void Increment(absl::index_sequence<Ids...> ids) {
+  void Increment(std::index_sequence<Ids...> ids) {
     (IncrementOrWrap<kNumberOfRanges - Ids - 1>() || ...);
   }
   void Increment() { Increment(IndexSeq()); }
@@ -178,7 +177,7 @@ class NestedIterator
     }
   }
   template <size_t... Ids>
-  void Decrement(absl::index_sequence<Ids...> ids) {
+  void Decrement(std::index_sequence<Ids...> ids) {
     (DecrementOrWrap<kNumberOfRanges - Ids - 1>() || ...);
   }
   void Decrement() { Decrement(IndexSeq()); }
